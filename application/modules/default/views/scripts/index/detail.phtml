@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDoチェッカー</title>
+    <link rel="stylesheet" href="/css/index.css" media="all" type="text/css" >
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" >
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+</head>
+<body>
+    <header id="header">
+        <a href="/" class="ttl"><h1>ToDoチェッカー</h1></a>
+        <p class="search_link">
+            <a href="/search/">検索</a>
+        </p>
+    </header>
+    <div id="wrapper">
+        <h2><?= $this->listName ?>のTodo</h2>
+        <div id="addlist" class="clearfix">
+            <p class="form_ttl">
+                新しいTodoを作成する
+            </p>
+            <form method="post" action="/index/detailexecute/">
+            <?= $this->todoForm->name ?>
+            <?= $this->todoForm->period ?>
+            <input type="hidden" name="listNum" value="<?= $this->params['listNum'] ?>" id="listNum">
+            <p class="btn">
+                <button type="submit">Todoを追加</button>
+            </p>
+            </form>
+        </div>
+        <div>
+            <?if(empty($this->todoAll)): ?>
+            <p class="attention_txt">
+                登録されたTodoはございません
+            </p>
+            <?else: ?>
+            <p class="sub_ttl">
+                Todo一覧
+            </p>
+            <ul id="list">
+                <?foreach($this->todoAll as $todo): ?>
+                <li class="list_box">
+                    <dl>
+                        <dt><?= $this->viewTodo($todo, 'todoName', null) ?></dt>
+                        <dd>
+                            期限：<?= $this->viewTodo($todo, 'period', null) ?>
+                        </dd>
+                        <dd>
+                            作成日：<?= $this->viewTodo($todo, 'created', null) ?>
+                        </dd>
+                    </dl>
+                    <p id="<?= $this->viewTodo($todo, 'id', null) ?>" class="status <?if($todo['status'] === '0'): ?>yet<?elseif($todo['status'] === '1'): ?>done<?endif ?>">
+                        <?= $this->viewTodo($todo, 'status', null) ?>
+                    </p>
+                    <p class="delete">
+                        ×削除
+                    </p>
+                </li>
+                <?endforeach ?>
+            </ul>
+            <?endif ?>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function(){
+        if($('ul').length > 0)
+        {
+            // ステータスを変更
+            $('.list_box p.status').on('click', function(){
+                var id = $(this).attr('id');
+                $.ajax({
+                    type: 'post',
+                    url: '/index/changestatus/',
+                    data: 'id=' + id,
+                }).done(function(){
+                    location.reload(true);
+                }).fail(function(){
+                    alert('エラーが発生しました');
+                    return false;
+                });
+                return false;
+            });
+
+            // Todoを削除
+            $('.list_box p.delete').on('click', function(){
+                if(!confirm('本当にこのTodoを削除しますか？')) {
+                    return false;
+                } else {
+                    var id = $(this).prev().attr('id');
+                    $.ajax({
+                        type: 'post',
+                        url: '/index/delete/',
+                        data: 'id=' + id,
+                    }).done(function(){
+                        location.reload(true);
+                    }).fail(function(){
+                        alert('エラーが発生しました');
+                        return false;
+                    });
+                    return false;
+                }
+            });
+        }
+    });
+    $(function() {
+        $.datepicker.setDefaults( $.datepicker.regional[ "ja" ] );
+        $('#period').datepicker({
+            changeYear: true, //表示年の指定が可能
+            changeMonth: true, //表示月の指定が可能
+            dateFormat: 'yy-mm-dd' //年-月-日(曜日)
+        });
+    });
+    </script>
+    <footer id="footer">
+        ToDoチェッカー
+    </footer>
+</body>
+</html>

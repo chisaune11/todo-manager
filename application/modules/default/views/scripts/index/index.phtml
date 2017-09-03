@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDoチェッカー</title>
+    <link rel="stylesheet" href="/css/index.css" media="all" type="text/css" >
+</head>
+<body>
+    <header id="header">
+        <a href="/" class="ttl"><h1>ToDoチェッカー</h1></a>
+        <p class="search_link">
+            <a href="/search/">検索</a>
+        </p>
+    </header>
+    <div id="wrapper">
+        <div id="addlist" class="clearfix">
+            <p class="form_ttl">
+                新しいTodoリストを作成する
+            </p>
+            <form method="post" action="/index/add/">
+                <?= $this->listForm->name ?>
+                <p class="btn">
+                    <button type="submit">Todoリストを追加</button>
+                </p>
+            </form>
+        </div>
+        <?if(!empty($this->errorMsg)): ?>
+        <p class="attention_txt">
+            <?= $this->errorMsg ?>
+        </p>
+        <?elseif(!empty($this->newList)): ?>
+        <p class="attention_txt black">
+            <?= $this->message ?>
+        </p>
+        <?if(!empty($this->newList)): ?>
+        <ul id="list">
+            <li class="list_box">
+                <dl>
+                    <dt>
+                        <a href="/list/<?= $this->newList['id'] ?>/"><?= $this->newList['name'] ?></a>
+                    </dt>
+                    <dd>
+                        Todoがありません
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+        <?endif ?>
+        <?unset($_SESSION['message']); ?>
+        <?else: ?>
+        <div>
+            <?if(!empty($this->todoList)): ?>
+            <p class="sub_ttl">
+                Todoリスト一覧
+            </p>
+            <ul id="list">
+                <?foreach($this->todoList as $data): ?>
+                    <li class="list_box">
+                        <dl>
+                            <dt>
+                                <a href="/list/<?= $data['listId'] ?>/"><?= $data['listName'] ?></a>
+                            </dt>
+                            <dd>
+                                <?= $data['allCnt'] ?>個中<?= $data['allCnt']-$data['yetCnt'] ?>個がチェック済み
+                            </dd>
+                            <dd>
+                                〜<?= $this->viewTodo($data, 'period', null) ?>
+                            </dd>
+                        </dl>
+                    </li>
+                <?endforeach ?>
+            </ul>
+            <?endif; ?>
+        </div>
+        <?endif ?>
+
+    </div>
+    <footer id="footer">
+        ToDoチェッカー
+    </footer>
+</body>
+</html>

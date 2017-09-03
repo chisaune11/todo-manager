@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>お探しのページが見つかりません</title>
+    <link rel="stylesheet" href="/css/index.css" media="all" type="text/css" >
+</head>
+<body>
+    <header id="header">
+        <a href="/" class="ttl"><h1>ToDoチェッカー</h1></a>
+        <p class="search_link">
+            <a href="/search/">検索</a>
+        </p>
+    </header>
+    <div id="wrapper">
+        <h1>エラー</h1>
+            <p>エラーが発生しました。</p>
+            エラーの種類： <?= $this->errmsg;?>
+    </div>
+    <footer id="footer">
+        ToDoチェッカー
+    </footer>
+</body>
+</html>

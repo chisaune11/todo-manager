@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <?= $this->render('/header.phtml') ?>
+    <div id="wrapper">
+        <?= $this->layout()->content ?>
+    </div>
+    <?= $this->render('/footer.phtml') ?>
+    <?//= $this->render($this->layout()->footer) ?>
+</body>
+</html>
