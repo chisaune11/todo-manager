@@ -86,12 +86,11 @@ class IndexController extends Zend_Controller_Action
         // DB接続
         $list = new Default_Model_TodoList();
 
-        if(!empty($params['name'])) {
-            // １文字もない時
-            if(mb_strlen($params['name']) < 1) {
-                $isFalse = true;
-                $this->view->errorMsg = 'ToDoリストの名称を入力してください';
-            }
+        // １文字もない時
+        if(empty($params['name'])) {
+            $isFalse = true;
+            $this->view->errorMsg = 'ToDoリストの名称を入力してください';
+        } elseif(!empty($params['name'])) {
 
             // ３０文字以上の時
             if(mb_strlen($params['name']) > 30) {
@@ -175,13 +174,11 @@ class IndexController extends Zend_Controller_Action
         // DB接続
         $todo = new Default_Model_TodoDetail();
 
-        if(!empty($params['name'])) {
-            // １文字もない時
-            if(mb_strlen($params['name']) < 1) {
-                $isFalse = true;
-                $this->view->errorMsg = 'ToDoの名称を入力してください';
-            }
-
+        // １文字もない時
+        if(empty($params['name'])) {
+            $isFalse = true;
+            $this->view->errorMsg = 'ToDoの名称を入力してください';
+        } elseif(!empty($params['name'])) {
             // ３０文字以上の時
             if(mb_strlen($params['name']) > 30) {
                 $isFalse = true;
