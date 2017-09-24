@@ -83,6 +83,15 @@ class Default_Model_TodoDetail extends Zend_Db_Table_Abstract
             return array();
         }
 
+        // エスケープ処理
+        if(!empty($option['name'])) {
+            $str = str_replace(
+                array('%', '_', '\\'),
+                array('\%', '\_', '\\\\'),
+                $option['name']
+            );
+        }
+
         $query = "
             SELECT
                 detail.id,
@@ -99,7 +108,7 @@ class Default_Model_TodoDetail extends Zend_Db_Table_Abstract
             WHERE
         ";
         if(!empty($option['name'])) {
-            $query .= 'detail.name LIKE "%'.$option['name'].'%"';
+            $query .= 'detail.name LIKE "%'.$str.'%"';
         }
         $query .= ' ORDER BY detail.created DESC';
 
@@ -110,7 +119,7 @@ class Default_Model_TodoDetail extends Zend_Db_Table_Abstract
     }
 
     // 同じ名前のリストを検索
-    public function getSameName($option = array())
+    public function getSameName($name)
     {
         $query = "
             SELECT
@@ -119,8 +128,8 @@ class Default_Model_TodoDetail extends Zend_Db_Table_Abstract
                 $this->_name
             WHERE
             ";
-        if(!empty($option['name'])) {
-            $query .= $this->_db->quoteInto('name = ?', $option['name']);
+        if(!empty($name)) {
+            $query .= $this->_db->quoteInto('name = ?', $name);
         }
         $query .= 'LIMIT 1';
 

@@ -82,18 +82,37 @@ class IndexController extends Zend_Controller_Action
         $listForm = new Default_Model_Form_Form();
         $listForm->setBaseForm('listForm', '/index/add/');
         $listForm->setListFormElement();
-        $this->view->listForm = $listForm;
-        // var_dump($params);
-
-        if(!$listForm->isValid($params))
-        {
-            $errorMsg = 'エラーが発生しました';
-            $this->view->errorMsg = $errorMsg;
-            $this->render('index');
-        }
 
         // DB接続
         $list = new Default_Model_TodoList();
+
+        if(!empty($params['name'])) {
+            // １文字もない時
+            if(mb_strlen($params['name']) < 1) {
+                $isFalse = true;
+                $this->view->errorMsg = 'ToDoリストの名称を入力してください';
+            }
+
+            // ３０文字以上の時
+            if(mb_strlen($params['name']) > 30) {
+                $isFalse = true;
+                $this->view->errorMsg = 'ToDoリストの名称は30文字以内にしてください';
+            }
+
+            // 同じ名前がないか
+            if($check = $list->getSameName($params['name'])) {
+                $isFalse = true;
+                $this->view->errorMsg = '同じ名前のToDoリストがすでに存在しています';
+            }
+        }
+
+        if(!$listForm->isValid($params) || $isFalse)
+        {
+            // $errorMsg = 'エラーが発生しました';
+            // $this->view->errorMsg = $errorMsg;
+            $this->view->listForm = $listForm;
+            $this->render('index');
+        }
 
         // DBに登録するデータ
         $data = array(
@@ -111,7 +130,6 @@ class IndexController extends Zend_Controller_Action
         $_SESSION['message'] = $message;
 
         $this->_redirect('/');
-        // $this->render('add');
     }
 
     // Todoリスト画面
@@ -132,6 +150,7 @@ class IndexController extends Zend_Controller_Action
         $todoForm = new Default_Model_Form_Form();
         $todoForm->setBaseForm('todoForm', '/index/detailexecute/');
         $todoForm->setDetailFormElement($params);
+        $todoForm->setDefaults($params);
         $this->view->todoForm = $todoForm;
 
         $this->view->params = $params;
@@ -142,7 +161,7 @@ class IndexController extends Zend_Controller_Action
     // Todo登録処理
     public function detailexecuteAction()
     {
-        $params = $this->getRequest()->getParams();
+        $params = $this->getRequest()->getParams();var_dump($params);
 
         // POSTでなければLPトップ
         if(!$this->getRequest()->isPost()) $this->_redirect("/");
@@ -151,18 +170,37 @@ class IndexController extends Zend_Controller_Action
         $todoForm = new Default_Model_Form_Form();
         $todoForm->setBaseForm('todoForm', '/index/detailexecute/');
         $todoForm->setDetailFormElement($params);
-        $this->view->todoForm = $todoForm;
-
-        if(!$todoForm->isValid($params))
-        {
-            // エラーメッセージを取得
-            $this->view->errorMsg = 'エラーが発生しました';
-
-            $this->render('detail');
-        }
+        $todoForm->setDefaults($params);
 
         // DB接続
         $todo = new Default_Model_TodoDetail();
+
+        if(!empty($params['name'])) {
+            // １文字もない時
+            if(mb_strlen($params['name']) < 1) {
+                $isFalse = true;
+                $this->view->errorMsg = 'ToDoの名称を入力してください';
+            }
+
+            // ３０文字以上の時
+            if(mb_strlen($params['name']) > 30) {
+                $isFalse = true;
+                $this->view->errorMsg = 'ToDoの名称は30文字以内にしてください';
+            }
+
+            // 同じ名前がないか
+            if($check = $todo->getSameName($params['name'])) {
+                $isFalse = true;
+                $this->view->errorMsg = '同じ名前のToDoがすでに存在しています';
+            }
+        }
+
+        if(!$todoForm->isValid($params) || $isFalse)
+        {
+            $this->view->todoForm = $todoForm;
+
+            $this->render('detail');
+        }
 
         // DBに登録するデータ
         $data = array(
@@ -176,7 +214,7 @@ class IndexController extends Zend_Controller_Action
         // DBに登録
         $todo->insert($data);
 
-        $this->_redirect('/list/'.$params['listNum'].'/');
+        $this->_redirect("/list/".$params['listNum']."/");
 
     }
 

@@ -49,7 +49,7 @@ class Default_Model_Form_Form extends Zend_Form
         $element->addValidator('NotEmpty');
         $element->setAttrib('class','hissu');
         $element->setAttrib('style', 'width: 700px; height: 40px; font-size: 1.6rem; border: 1px solid #888888; border-radius: 3px; padding: 3px; margin-bottom: 5px;');
-        $element->addValidator('stringLength', true, array(0, 30));
+        $element->addValidator('stringLength', true, array(1, 30));
         $element->setRequired(true);
         $this->addElement($element);
 

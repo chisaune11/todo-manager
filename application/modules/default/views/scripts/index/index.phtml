@@ -17,7 +17,7 @@
             <p class="form_ttl">
                 新しいTodoリストを作成する
             </p>
-            <form method="post" action="/index/add/">
+            <form method="post" action="/index/add/" id="listForm">
                 <?= $this->listForm->name ?>
                 <p class="btn">
                     <button type="submit">Todoリストを追加</button>
@@ -26,7 +26,7 @@
         </div>
         <?if(!empty($this->errorMsg)): ?>
         <p class="attention_txt">
-            <?= $this->errorMsg ?>
+            <?= $this->errorMsg ?>ToDoリストの名称は30文字以内にしてください
         </p>
         <?elseif(!empty($this->newList)): ?>
         <p class="attention_txt black">
