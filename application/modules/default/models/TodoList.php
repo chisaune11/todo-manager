@@ -202,7 +202,7 @@ class Default_Model_TodoList extends Zend_Db_Table_Abstract
             WHERE
             ";
         if(!empty($name)) {
-            $query .= $this->_db->quoteInto('name = "?"', $name);
+            $query .= $this->_db->quoteInto('name = ?', $name);
         }
         $query .= ' LIMIT 1';
 
